@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --primary: #1E3A8A;
+  --secondary: #F59E0B;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --primary: #3B82F6;
+    --secondary: #FBBF24;
+  }
+}
+
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Lora', serif;
+  line-height: 1.8;
+  scroll-behavior: smooth;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: var(--secondary);
+}
+
+
+p {
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .blog-title {
+    @apply text-4xl font-bold mb-4;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .blog-subtitle {
+    @apply text-xl font-medium mb-2 text-gray-600 dark:text-gray-300;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .blog-content {
+    @apply text-base leading-relaxed;
+    font-family: 'Lora', serif;
+  }
+
+  .menu-link {
+    @apply text-base;
+    font-family: 'Lora', serif;
+  }
+}

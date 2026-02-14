@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+
+  bio       String?
+
+  posts     Post[]
+  comments  Comment[]
+
+  favorites Favorite[]
+
+  reactions PostReaction[]
+
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+
+  imageComments  ImageComment[]
+  imageReactions ImageReaction[]
+
+  images Image[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  tag       String
+  content   String
+  createdAt DateTime @default(now())
+
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+
+  comments  Comment[]
+
+  favoritedBy Favorite[]
+
+  reactions PostReaction[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Favorite {
+  id       String  @id @default(cuid())
+
+  userId   String
+  postId   String?
+  imageId  String?
+
+  user     User    @relation(fields: [userId], references: [id])
+  post     Post?   @relation(fields: [postId], references: [id])
+  image    Image?  @relation(fields: [imageId], references: [id])
+
+  @@unique([userId, postId])
+  @@unique([userId, imageId])
+}
+
+model PostReaction {
+  id        String   @id @default(cuid())
+
+  userId    String
+  postId    String
+
+  type      String
+
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  senderId   String
+  receiverId String
+
+  sender     User @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User @relation("ReceivedMessages", fields: [receiverId], references: [id])
+}
+
+model Image {
+  id          String   @id @default(cuid())
+  url         String
+  name        String
+  description String?
+  tag         String?
+  createdAt   DateTime @default(now())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  comments    ImageComment[]
+  reactions   ImageReaction[]
+  favorites   Favorite[]
+}
+
+model ImageComment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  imageId String
+  image   Image  @relation(fields: [imageId], references: [id])
+
+  userId String
+  user   User  @relation(fields: [userId], references: [id])
+}
+
+model ImageReaction {
+  id        String   @id @default(cuid())
+
+  userId    String
+  imageId   String
+
+  type      String
+
+  user      User     @relation(fields: [userId], references: [id])
+  image     Image    @relation(fields: [imageId], references: [id])
+
+  @@unique([userId, imageId])
+}
